@@ -103,3 +103,43 @@ func (l *List) String() string {
 
 	return formatted
 }
+
+func (l *List) Verbose() string {
+	formatted := ""
+
+	for k, t := range *l {
+		prefix := "  "
+		suffix := ""
+		createdTime := t.CreatedAt.Format("Mon Jan _2 2006 15:04:05")
+		completedTime := t.CompletedAt.Format("Mon Jan _2 2006 15:04:05")
+
+		if t.Done {
+			prefix = "X "
+			suffix = fmt.Sprintf("Completed: %s", completedTime)
+		}
+
+		// Adjust the item number k to print numbers starting from 1 instead of 0
+		formatted += fmt.Sprintf("%s%d: %s Created: %s %s\n", prefix, k+1, t.Task, createdTime, suffix)
+	}
+
+	return formatted
+
+}
+
+func (l *List) Incomplete(verbose bool) string {
+	formatted := ""
+
+	for k, t := range *l {
+		createdTime := t.CreatedAt.Format("Mon Jan _2 2006 15:04:05")
+
+		if !t.Done {
+			if verbose {
+				formatted += fmt.Sprintf("%d: %s Created: %s\n", k+1, t.Task, createdTime)
+			} else {
+				formatted += fmt.Sprintf("%d: %s\n", k+1, t.Task)
+			}
+		}
+	}
+
+	return formatted
+}
